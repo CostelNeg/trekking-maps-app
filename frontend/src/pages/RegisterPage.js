@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './AuthPages.css';
 //import {useNavigate} from 'react-router-dom';
 
 function SignupPage() {
@@ -26,19 +27,43 @@ function SignupPage() {
   };
 
   return (
-    <div>
-      <h2>Registrati</h2>
-      <form onSubmit={handleSignup}>
-        <label>Username</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-        <label>Email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <label>Password</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">Registrati</button>
-      </form>
+    <div className="auth-container">
+        <form className="auth-form" onSubmit={handleSignup}>
+            <h2>Registrati</h2>
+            <div className="form-group">
+                <label htmlFor="username">Username</label>
+                <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+            </div>
+            <button className="submit-btn" type="submit">Registrati</button>
+        </form>
     </div>
-  );
+);
 }
 
 export default SignupPage;

@@ -8,13 +8,13 @@ import mapRoutes from '../backend/routes/mapRoutes.js'
 //carico le  variabili d'ambiente
 dotenv.config();
 //siamo qua 
-console.log(cioa);
+console.log('cioa');
 
 const app = express();
+app.use(express.json());
 app.use(cors({
     origin:'http://localhost:3000'
 }));
-app.use(express.json());
 
 
 //conessione db 
