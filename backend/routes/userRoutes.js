@@ -38,7 +38,8 @@ router.post("/register", registerUser, async (req, res) => {
     res.status(201).json({
       _id: user._id,
       username: user.username,
-      token: generateToken(user.id),
+      token
+    //   token: generateToken(user.id),
     });
     console.log("qua5");
   } catch (err) {
@@ -60,7 +61,7 @@ router.post('/login',loginUser, async (req, res) => {
       }
   
       // Verifica la password
-      const isMatch = await user.matchPassword(password);
+      const isMatch = await user.comparePassword(password);
       if (!isMatch) {
         return res.status(401).json({ message: 'Credenziali non valide' });
       }

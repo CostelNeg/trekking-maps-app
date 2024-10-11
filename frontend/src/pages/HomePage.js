@@ -9,7 +9,6 @@ const HomePage = () => {
   return (
     <div className="home-page">
       <div className="container">
-        <h1>Benvenuto nel Sito di Trekking</h1>
         <div className="map-container">
           <MapList />
         </div>
