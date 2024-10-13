@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Card, Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "./MapList.css";
 
-const trekData = {
+ export const trekData = {
   Toscana: [
     {
       id: 1,
@@ -247,15 +248,11 @@ const MapList = () => {
 
   return (
     <Container fluid className="p-0">
-      <p className="title" >Esplora i sentieri più belli d'Italia e scopri nuove avventure!</p>
+      <p className="title">Esplora i sentieri più belli d'Italia e scopri nuove avventure!</p>
       <Container className="mt-5">
         <Form.Group className="mb-4">
           <Form.Label>Seleziona una regione:</Form.Label>
-          <Form.Control
-            as="select"
-            value={selectedRegion}
-            onChange={handleRegionChange}
-          >
+          <Form.Control as="select" value={selectedRegion} onChange={handleRegionChange}>
             <option value="">Scegli una regione</option>
             {Object.keys(trekData).map((region) => (
               <option key={region} value={region}>
@@ -269,19 +266,21 @@ const MapList = () => {
           <Row>
             {trekData[selectedRegion].map((trek) => (
               <Col key={trek.id} xs={12} md={6} lg={4} className="mb-4">
-                <Card className="h-100 trek-card">
-                  <Card.Img variant="top" src={trek.image} alt={trek.name} />
-                  <Card.Body>
-                    <Card.Title>{trek.name}</Card.Title>
-                    <Card.Text>
-                      <strong>Luogo:</strong> {trek.location}
-                      <br />
-                      <strong>Durata:</strong> {trek.duration}
-                      <br />
-                      <strong>Difficoltà:</strong> {trek.difficulty}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
+                <Link to={`/trek/${trek.id}`} className="text-decoration-none">
+                  <Card className="h-100 trek-card">
+                    <Card.Img variant="top" src={trek.image} alt={trek.name} />
+                    <Card.Body>
+                      <Card.Title>{trek.name}</Card.Title>
+                      <Card.Text>
+                        <strong>Luogo:</strong> {trek.location}
+                        <br />
+                        <strong>Durata:</strong> {trek.duration}
+                        <br />
+                        <strong>Difficoltà:</strong> {trek.difficulty}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Link>
               </Col>
             ))}
           </Row>
