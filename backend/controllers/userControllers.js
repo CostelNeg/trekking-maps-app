@@ -58,17 +58,16 @@ export const loginUser = async (req, res) => {
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
+      console.log(`Password fornita: ${password}, Hash salvato: ${user.password}`); // Log per debugging
       if (!isMatch) {
           console.warn(`Password errata per l'utente: ${username}`);
           return res.status(401).json({ message: 'Credenziali non valide' });
       }
 
-      console.log('cioa')
-      const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
-          expiresIn: '1h',
-      });
-
+      const token = generateToken(user._id);
       console.log('Login riuscito per:', { username });
+
+
       res.json({ token });
   } catch (error) {
       console.error('Errore durante il login:', error);

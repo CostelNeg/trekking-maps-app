@@ -2,8 +2,9 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f2f5;
+    background-color: #fdfdfd;
   }
+  
   
   .container {
     max-width: 1200px;
@@ -12,14 +13,14 @@ body {
   }
   
   /* Stili per la Navbar */
-  .navbar {
-    background-color: #ffffff;
+  /* .navbar {
+    background-color: #357a49;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
+  } */
   
   .navbar a {
     color: #333;
@@ -74,7 +75,7 @@ body {
   /* Stili responsivi */
   @media (max-width: 768px) {
     .navbar {
-      flex-direction: column;
+      
       align-items: flex-start;
     }
   
@@ -83,4 +84,41 @@ body {
       margin-bottom: 10px;
     }
   }
+  .navbar {
+    display: flex;
+    justify-content:space-evenly;
+    align-items: center;
+    padding: 10px;
+    background-color: #eaeceb; /* Cambia il colore di sfondo se necessario */
+    color: rgb(51, 48, 48);
+  }
   
+  .navbar a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    margin: 0 15px;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .username {
+    margin-right: 10px; /* Spazio tra nome utente e icona */
+  }
+  
+  .user-icon {
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50%; /* Rende l'icona circolare, se è un'immagine rotonda */
+  }
+  
+  .logout-btn {
+    background-color: rgba(235, 197, 150, 0.2); 
+    color: rgb(5, 4, 4); /* Colore del testo */
+    border: none;
+    border-radius: 20%;
+    margin-right: 1em;
+    cursor: pointer;
+  }

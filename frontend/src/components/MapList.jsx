@@ -247,7 +247,7 @@ const MapList = () => {
 
   return (
     <Container fluid className="p-0">
-      <p>Esplora i sentieri più belli d'Italia e scopri nuove avventure!</p>
+      <p className="title" >Esplora i sentieri più belli d'Italia e scopri nuove avventure!</p>
       <Container className="mt-5">
         <Form.Group className="mb-4">
           <Form.Label>Seleziona una regione:</Form.Label>

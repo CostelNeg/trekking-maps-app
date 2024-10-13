@@ -1,14 +1,16 @@
 import React, {useState} from 'react';
-import {login} from '../services/api.js';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
 import './AuthPages.css'
 
 const LoginPage = () => {
+    const {login} = useAuth()
+    const {navigate} = useNavigate() 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleLogin = async (e) => {
         e.preventDefault(); // Previeni il comportamento predefinito del form
-
         try {
             const response = await fetch('http://localhost:5000/api/users/login', {
                 method: 'POST',
@@ -17,12 +19,12 @@ const LoginPage = () => {
                 },
                 body: JSON.stringify({ username, password }),
             });
-
             if (response.ok) {
                 const data = await response.json();
                 console.log('Login riuscito:', data);
-                localStorage.setItem('token', data.token); // Salva il token
-                // Reindirizza o esegui altre azioni necessarie dopo il login
+                login(data.token, username);
+                navigate('/');
+                
             } else {
                 const errorData = await response.json();
                 console.error('Errore nel login:', errorData.message);

@@ -13,7 +13,7 @@ const HomePage = () => {
     setIsFormVisible(!isFormVisible);
   };
   return (
-    <div className="home-page">
+    <Container fluid className="home-page">
       <Container fluid className="p-0">
         <div
           className="hero-container"
@@ -24,21 +24,16 @@ const HomePage = () => {
         >
           <div className="hero-content">
             <h1>Benvenuto nel Sito di Trekking</h1>
-            
           </div>
         </div>
       </Container>
 
-      <div className="container">
+      <Container fluid className="container">
         <div className="map-container">
           <MapList />
         </div>
-        {token && (
-          <div className="map-form">
-            <MapForm token={token} />
-          </div>
-        )}
-      </div>
+        
+      </Container>
 
       <div class="container mt-4">
         <h2 class="text-center mb-4">Attrezzatura per il Trekking</h2>
@@ -65,7 +60,7 @@ const HomePage = () => {
           <div class="col-md-6 mb-4">
             <div class="card h-100">
               <img
-                src="/path/to/backpack-image.jpg"
+                src="https://oberalp.imgix.net/89f4ae44-2164-4427-a9cb-248a8db2e075.png?auto=format&w=300&h=300"
                 class="card-img-top"
                 alt="Zaini da Trekking"
               />
@@ -75,7 +70,7 @@ const HomePage = () => {
                   Esplora la nostra gamma di zaini comodi e spaziosi per portare
                   tutto il necessario.
                 </p>
-                <a href="#" class="btn btn-primary">
+                <a href="https://www.salewa.com/it-it/zaini?srsltid=AfmBOorVZ9sjY6UYKVlcYh-FaMP0pbxOHVt06-eVoisUf-09B5m40uMJ" class="btn btn-primary">
                   Scopri di Più
                 </a>
               </div>
@@ -108,7 +103,7 @@ const HomePage = () => {
         </div>
       </div>
     </footer>
-    </div>
+    </Container>
   );
 };
 

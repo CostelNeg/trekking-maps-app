@@ -36,7 +36,7 @@ router.post('/register', async (req, res) => {
       const newUser = new User({
           username,
           email,
-          password: hashedPassword, // Usa la password hashata
+          password // NON USARE  la password hashata
       });
 
       // Salva l'utente nel database
@@ -68,6 +68,7 @@ router.post("/login", loginUser, async (req, res) => {
 
         // Verifica la password
         const isMatch = await bcrypt.compare(password, user.password);
+        console.log(`Password fornita: ${password}, Hash salvato: ${user.password}`); // Log per debugging
         if (!isMatch) {
             console.warn(`Password errata per l'utente: ${username}`);
             return res.status(401).json({ message: 'Credenziali non valide' });
