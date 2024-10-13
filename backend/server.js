@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from '../backend/config/db.js';
 import userRoutes from '../backend/routes/userRoutes.js';
-//import mapRoutes from '../backend/routes/mapRoutes.js';
+import mapRoutes from '../backend/routes/mapRoutes.js';
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ connectDB();
 
 // Rotte
 app.use('/api/users', userRoutes);
-// app.use('/api/maps', mapRoutes);
+ app.use('/api/maps', mapRoutes);
 
 // Avvio del server
 const PORT = process.env.PORT || 5000;

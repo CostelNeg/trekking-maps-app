@@ -7,7 +7,7 @@ body {
   
   
   .container {
-    max-width: 1200px;
+ 
     margin: 0 auto;
     padding: 20px;
   }
@@ -50,7 +50,7 @@ body {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 0px;
     margin-bottom: 20px;
     transition: box-shadow 0.3s ease;
   }
@@ -122,3 +122,48 @@ body {
     margin-right: 1em;
     cursor: pointer;
   }
+
+  /* carousel css */
+
+  /* carouselStyles.css */
+.custom-carousel .carousel-control-prev-icon,
+.custom-carousel .carousel-control-next-icon {
+
+  background-color: rgb(112, 108, 108); 
+  border-radius: 50%; 
+  width: 30px;
+  height: 30px;
+}
+
+.custom-carousel .carousel-control-prev-icon {
+  display: flex;
+  background-image: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-carousel .carousel-control-next-icon {
+  display: flex;
+  background-image: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-carousel .carousel-control-prev-icon::after,
+.custom-carousel .carousel-control-next-icon::after {
+  content: '';
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 8px;
+}
+
+.custom-carousel .carousel-control-prev-icon::after {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+.custom-carousel .carousel-control-next-icon::after {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
