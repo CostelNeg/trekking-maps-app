@@ -1,108 +1,87 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
+import { generateToken } from "./generateToken.js";
+// Generazione del token JWT
+// const generateToken = (id, isAdmin) => {
+//   return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, { expiresIn: "30d" });
+// };
 
-//generiami il JWT Token
-
-const generateToken = (id, isAdmin) => {
-  return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
-};
-
-//registarazione utente
-
+// Registrazione utente
 export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
-  console.log(req.body);
+
   try {
-    const exitingUser = await User.findOne({ username });
-    console.log(1);
+      // Controlla se l'username esiste già
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+          return res.status(400).json({ message: 'Username già in uso' });
+      }
 
-    if (exitingUser) {
-      console.log(exitingUser);
-      return res.status(400).json({ message: "Email gia in uso" });
-    }
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const user = new User({ username, email, password: hashedPassword });
-    await user.save();
-    console.log(2);
+      // Controlla se l'email esiste già
+      const existingEmail = await User.findOne({ email });
+      if (existingEmail) {
+          return res.status(400).json({ message: 'Email già in uso' });
+      }
 
-    //genera token jwt
-    const token = generateToken(user._id, user.isAdmin);
-    //restituiamio dati e token user
+      // Crea un nuovo utente
+      const hashedPassword = await bcrypt.hash(password, 12);
+      const user = new User({ username, email, password: hashedPassword });
+      await user.save();
 
-    res.status(201).json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      token,
-    });
-    console.log(3);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+      // Genera un token JWT (se necessario)
+      const token = generateToken(user._id);
+
+      // Risposta con i dati dell'utente
+      res.status(201).json({
+          _id: user._id,
+          username: user.username,
+          token,
+      });
+  } catch (error) {
+      console.error('Errore durante la registrazione:', error);
+      res.status(500).json({ message: 'Errore interno del server' });
   }
 };
 
+// Login utente
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
-  console.log("Dati ricevuti per login:", req.body);
 
-  if (!username || !password) {
-    return res.status(400).json({ message: "Tutti i campi sono obbligatori." });
-  }
+  console.log('Richiesta di login ricevuta:', { username });
 
   try {
-    console.log("Verifica se l'utente esiste...");
-    const user = await User.findOne({ username });
-    console.log("Utente trovato:", user);
+      const user = await User.findOne({ username });
+      if (!user) {
+          console.warn(`Utente non trovato: ${username}`);
+          return res.status(401).json({ message: 'Credenziali non valide' });
+      }
 
-    if (!user) {
-      return res.status(401).json({ message: "Credenziali non valide" });
-    }
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+          console.warn(`Password errata per l'utente: ${username}`);
+          return res.status(401).json({ message: 'Credenziali non valide' });
+      }
 
-    console.log("Verifica della password...");
-    console.log("password fornita",password);
-    console.log("password nel db :" ,user.password);
-    const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password corrispondente:", isMatch);
-
-    if (user && isMatch) {
-      // Genera token JWT
-      const token = generateToken(user._id, user.isAdmin);
-
-      // Restituisci dati e token utente
-      res.status(200).json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        token,
+      console.log('cioa')
+      const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
+          expiresIn: '1h',
       });
-      console.log("Login completato.");
-    } else {
-      return res.status(401).json({ message: "Credenziali non valide" });
-    }
-  } catch (err) {
-    console.error("Errore durante il login:", err);
-    res
-      .status(500)
-      .json({ message: "Errore durante il login", error: err.message });
+
+      console.log('Login riuscito per:', { username });
+      res.json({ token });
+  } catch (error) {
+      console.error('Errore durante il login:', error);
+      res.status(500).json({ message: 'Errore nel server' });
   }
 };
 
-// Ottieni tutti gli utenti (esempio, potrebbe essere protetto)
+// Ottenere tutti gli utenti (potrebbe essere protetto)
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find({});
     res.status(200).json(users);
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Errore nel recupero degli utenti",
-        error: err.message,
-      });
+    res.status(500).json({ message: "Errore nel recupero degli utenti", error: err.message });
   }
 };

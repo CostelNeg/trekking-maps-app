@@ -1,38 +1,30 @@
 import mongoose from "mongoose";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
-    username : {
-        type:String,
-        required:true,
-        unique:true
-    },
-    email :{
-        type:String,
-        required:true,
-        unique:true
-    },
-    password:{
-        type:String,
-        required:true,
-    },
-    role: {
-    type:String,
-    default:'user'
-    },
-},{timestamps:true});
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  isAdmin: { type: Boolean, default: false },
+}, { timestamps: true });
 
-userSchema.pre('save',async function(next) {
-    if(!this.isModified('password')) return next()
-
-        //criptiamo la pass
-        this.password = await bcrypt.hash(this.password,12)
-        next();
+// Hash della password prima del salvataggio
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
-//confronto della pass tra quella inserita e quella criptata
-userSchema.methods.comparePassword = async function (candidatePassword) {
-    return bcrypt.compare(candidatePassword,this.password)
+// Funzione per confrontare la password
+userSchema.methods.comparePassword = async function(password) {
+  return await bcrypt.compare(password, this.password);
 };
- const User = mongoose.model('User', userSchema);
- export default User;
+
+const User = mongoose.model('User', userSchema);
+export default User;

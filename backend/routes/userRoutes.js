@@ -1,83 +1,158 @@
 import express from "express";
 import User from "../models/User.js";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { loginUser, registerUser } from "../controllers/userControllers.js";
-import { isAutenticated } from "../middleware/auth.js";
+import bcrypt from 'bcryptjs'
+import {
+  loginUser,
+  registerUser,
+  getUsers,
+} from "../controllers/userControllers.js";
+import { generateToken } from "../controllers/generateToken.js";
 
 const router = express.Router();
 
-//generriamo un token jwt
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
 };
 
-//Registrazione newUSer
-
-router.post("/register", registerUser, async (req, res) => {
-  console.log("Dati ricevuti:", req.body); // Log dei dati in ingresso
+// Registrazione utente
+router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
-  //controllo if userExist
+  console.log('Richiesta di registrazione ricevuta:', { username, email });
 
-  const existingUSer = await User.findOne({ username });
-  console.log("qua1");
-  if (existingUSer) {
-    return res.status(400).json({ message: "Utente gia esistente" });
-  }
-  console.log("qua2");
-  //creamo newUSer
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  const user = new User({ username, email, password: hashedPassword });
-  console.log("qua3");
   try {
-    await user.save();
-    console.log("qua4");
+      // Controlla se l'utente esiste già
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+          console.warn(`Utente già esistente: ${username}`);
+          return res.status(400).json({ message: 'Utente già esistente' });
+      }
 
-    //res con ttoken
-    res.status(201).json({
-      _id: user._id,
-      username: user.username,
-      token
-    //   token: generateToken(user.id),
-    });
-    console.log("qua5");
-  } catch (err) {
-    console.log("quaerr");
-    res.status(500).json({ message: "Errore durante la registrazione" });
+      // Hash della password
+      const hashedPassword = await hashPassword(password);
+
+      // Crea un nuovo utente
+      const newUser = new User({
+          username,
+          email,
+          password: hashedPassword, // Usa la password hashata
+      });
+
+      // Salva l'utente nel database
+      await newUser.save();
+      console.log('Utente registrato:', { username });
+
+      // Genera il token JWT
+      const token = generateToken(newUser._id, newUser.username);
+
+      res.status(201).json({ token });
+  } catch (error) {
+      console.error('Errore durante la registrazione:', error);
+      res.status(500).json({ message: 'Errore nel server' });
   }
 });
 
-//login user
+// Login utente
+router.post("/login", loginUser, async (req, res) => {
+  const { username, password } = req.body;
 
-router.post('/login',loginUser, async (req, res) => {
-    const { username, password } = req.body;
-  
+    console.log('Richiesta di login ricevuta:', { username });
+
     try {
-      // Trova l'utente
-      const user = await User.findOne({ username });
-      if (!user) {
-        return res.status(401).json({ message: 'Credenziali non valide' });
-      }
-  
-      // Verifica la password
-      const isMatch = await user.comparePassword(password);
-      if (!isMatch) {
-        return res.status(401).json({ message: 'Credenziali non valide' });
-      }
-  
-      // Genera un token JWT
-      const token = generateToken(user._id);
-  
-      res.json({
-        _id: user._id,
-        username: user.username,
-        role: user.role,
-        token,
-      });
+        const user = await User.findOne({ username });
+        if (!user) {
+            console.warn(`Utente non trovato: ${username}`);
+            return res.status(401).json({ message: 'Credenziali non valide' });
+        }
+
+        // Verifica la password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            console.warn(`Password errata per l'utente: ${username}`);
+            return res.status(401).json({ message: 'Credenziali non valide' });
+        }
+
+        // Genera il token JWT usando la funzione importata
+        const token = generateToken(user._id, user.username);
+
+        console.log('Login riuscito per:', { username });
+        res.json({ token });
     } catch (error) {
-      res.status(500).json({ message: 'Errore durante il login' });
+        console.error('Errore durante il login:', error);
+        res.status(500).json({ message: 'Errore nel server' });
     }
-  });
+
+//   const { username, password } = req.body;
+
+//   // Logging per il monitoraggio della richiesta
+//   console.log('Richiesta di login ricevuta:', { username });
+
+//   try {
+//       // Controlla se l'utente esiste nel database
+//       const user = await User.findOne({ username });
+//       if (!user) {
+//           console.warn(`Utente non trovato: ${username}`);
+//           return res.status(401).json({ message: 'Credenziali non valide' });
+//       }
+
+//       // Verifica la password
+//       const isMatch = await bcrypt.compare(password, user.password);
+//       if (!isMatch) {
+//           console.warn(`Password errata per l'utente: ${username}`);
+//           return res.status(401).json({ message: 'Credenziali non valide' });
+//       }
+
+//       // Genera il token JWT
+//       const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
+//           expiresIn: '1h', // Durata del token
+//       });
+// console.log(process.env.JWT_SECRET)
+//       console.log('Login riuscito per:', { username });
+//       res.json({ token });
+//   } catch (error) {
+//       console.error('Errore durante il login:', error);
+//       res.status(500).json({ message: 'Errore nel server' });
+//   }
+});
+
+// router.post('/login', async (req, res) => {
+//   const { username, password } = req.body;
+
+//   // Logging per il monitoraggio della richiesta
+//   console.log('Richiesta di login ricevuta:', { username });
+
+//   try {
+//       // Controlla se l'utente esiste nel database
+//       const user = await User.findOne({ username });
+//       if (!user) {
+//           console.warn(`Utente non trovato: ${username}`);
+//           return res.status(401).json({ message: 'Credenziali non valide' });
+//       }
+
+//       // Verifica la password
+//       const isMatch = await bcrypt.compare(password, user.password);
+//       if (!isMatch) {
+//           console.warn(`Password errata per l'utente: ${username}`);
+//           return res.status(401).json({ message: 'Credenziali non valide' });
+//       }
+
+//       // Genera il token JWT
+//       const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
+//           expiresIn: '1h', // Durata del token
+//       });
+// console.log(process.env.JWT_SECRET)
+//       console.log('Login riuscito per:', { username });
+//       res.json({ token });
+//   } catch (error) {
+//       console.error('Errore durante il login:', error);
+//       res.status(500).json({ message: 'Errore nel server' });
+//   }
+// });
+  
+
+
+// Ottenere tutti gli utenti
+router.get("/users", getUsers);
 
 export default router;

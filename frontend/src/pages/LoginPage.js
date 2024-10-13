@@ -7,21 +7,30 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
 
     const handleLogin = async (e) => {
-      e.preventDefault(); // Previene il comportamento predefinito del modulo
-      const response = await fetch('http://localhost:5000/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }), // username e password sono gli stati del tuo modulo
-      });
-    
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Login riuscito:', data);
-      } else {
-        console.error('Errore nel login:', response.statusText);
-      }
+        e.preventDefault(); // Previeni il comportamento predefinito del form
+
+        try {
+            const response = await fetch('http://localhost:5000/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Login riuscito:', data);
+                localStorage.setItem('token', data.token); // Salva il token
+                // Reindirizza o esegui altre azioni necessarie dopo il login
+            } else {
+                const errorData = await response.json();
+                console.error('Errore nel login:', errorData.message);
+                alert(errorData.message);
+            }
+        } catch (error) {
+            console.error('Errore nel login:', error);
+        }
     };
 
     return (
