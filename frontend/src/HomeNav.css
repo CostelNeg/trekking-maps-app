@@ -1,5 +1,8 @@
+*{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #fdfdfd;
@@ -89,7 +92,7 @@ body {
     justify-content:space-evenly;
     align-items: center;
     padding: 10px;
-    background-color: #eaeceb; /* Cambia il colore di sfondo se necessario */
+    background-color: #eaeceb; 
     color: rgb(51, 48, 48);
   }
   
@@ -105,6 +108,7 @@ body {
   }
   
   .username {
+    text-transform: capitalize;
     margin-right: 10px; /* Spazio tra nome utente e icona */
   }
   
@@ -125,22 +129,15 @@ body {
 
   /* carousel css */
 
-  /* carouselStyles.css */
-.custom-carousel .carousel-control-prev-icon,
-.custom-carousel .carousel-control-next-icon {
-
-  background-color: rgb(112, 108, 108); 
-  border-radius: 50%; 
-  width: 30px;
-  height: 30px;
-}
 
 .custom-carousel .carousel-control-prev-icon {
   display: flex;
   background-image: none;
   align-items: center;
-  justify-content: center;
+  justify-content:flex-start;
 }
+
+
 
 .custom-carousel .carousel-control-next-icon {
   display: flex;
@@ -149,10 +146,12 @@ body {
   justify-content: center;
 }
 
+
+
 .custom-carousel .carousel-control-prev-icon::after,
 .custom-carousel .carousel-control-next-icon::after {
   content: '';
-  border: solid white;
+  border: solid rgb(14, 13, 13);
   border-width: 0 2px 2px 0;
   display: inline-block;
   padding: 8px;
@@ -166,4 +165,136 @@ body {
 .custom-carousel .carousel-control-next-icon::after {
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
+}
+.custom-carousel {
+  margin-bottom: 2rem;
+}
+
+
+.card {
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.hero-container {
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+
+.hero-content h1{
+  font-family:fantasy;
+}
+
+.shop-section {
+  padding: 2rem 0;
+} */
+
+.custom-carousel {
+  margin-bottom: 2rem;
+}
+
+.card {
+  transition: transform 0.2s;
+  height: 100%;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+h1{
+  text-transform: capitalize;
+}
+
+.shop-section {
+  padding: 2rem 0;
+}
+
+.footer {
+  background-color: #2c4763;
+  padding: 1rem 0;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.footer-info {
+  width: 70%;
+}
+
+.footer-form {
+  width: 30%;
+}
+
+.footer-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-form input,
+.footer-form textarea {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+}
+
+.footer-form button {
+  padding: 0.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.footer-form button:hover {
+  background-color: #0056b3;
+}
+
+/*stilli per il shop-box user*/
+
+.shop-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.shop-section h2 {
+  font-size: 2rem; 
+  color: #789dc5;
+  margin-bottom: 2rem; 
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.shop-box {
+  background-color: #b6b4c0;
+  border: 2px solid #2358919d; 
+  border-radius: 8px; 
+  padding: 2rem; 
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+  text-align: center;
+  width: 80%; 
+  max-width: 800px; 
+}
+
+.shop-box h1 {
+  font-weight: bold; 
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color: #0a0b0e;
+  margin-bottom: 1rem;
 }
