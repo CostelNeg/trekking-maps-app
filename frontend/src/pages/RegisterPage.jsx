@@ -1,34 +1,36 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import './AuthPages.css';
-// import { useNavigate } from 'react-router-dom'; 
 
 function SignupPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    const [error, setError] = useState(''); // Stato per gestire gli errori
-    // const navigate = useNavigate(); 
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        setError(''); // Resetta l'errore
+        setError('');
 
-        console.log('Dati della registrazione:', { username, email, password });
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/users/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password }),
+            });
 
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/users/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password }),
-        });
+            const data = await response.json();
 
-        const data = await response.json();
-        console.log('Risposta dal server:', data); // Aggiunto per debug
-
-        if (response.ok) {
-            localStorage.setItem('user', JSON.stringify(data)); // Salva l'utente nel localStorage
-            // navigate('/'); // Reindirizza alla home, scommenta se usi il reindirizzamento
-        } else {
-            setError(data.message); // Mostra l'errore sullo schermo
+            if (response.ok) {
+                alert('Registrazione avvenuta con successo! Effettua il login.');
+                navigate('/login');
+            } else {
+                setError(data.message);
+            }
+        } catch (error) {
+            console.error('Errore durante la registrazione:', error);
+            setError('Si è verificato un errore durante la registrazione. Riprova più tardi.');
         }
     };
 
@@ -36,7 +38,7 @@ function SignupPage() {
         <div className="auth-container">
             <form className="auth-form" onSubmit={handleSignup}>
                 <h2>Registrati</h2>
-                {error && <p className="error-message">{error}</p>} {/* Mostra l'errore se presente */}
+                {error && <p className="error-message">{error}</p>}
                 <div className="form-group">
                     <label htmlFor="username">Username</label>
                     <input

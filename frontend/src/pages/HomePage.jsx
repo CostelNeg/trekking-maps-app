@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Carousel } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import MapList from "../components/MapList";
 import "../HomeNav.css";
 
 const HomePage = () => {
-  const token = localStorage.getItem("token");
-
+  const { isAuthenticated, username } = useAuth();
+  const navigate = useNavigate();
   const [isFormVisible, setIsFormVisible] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   const toggleFormVisibility = () => {
     setIsFormVisible(!isFormVisible);
   };
+
+  if (!isAuthenticated) {
+    return null; 
+  }
 
   return (
     <Container fluid className="home-page">
@@ -23,7 +35,7 @@ const HomePage = () => {
           }}
         >
           <div className="hero-content">
-            <h1>Benvenuto nel Sito di Trekking</h1>
+            <h1>Benvenuto nel Sito di Trekking, {username}!</h1>
           </div>
         </div>
       </Container>
