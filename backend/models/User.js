@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false },
+  isPremium: { type: Boolean, default: false },
+    downloadCount: { type: Number, default: 0 },
 }, { timestamps: true });
 
 // Hash della password prima del salvataggio

@@ -2,6 +2,7 @@ import express from "express";
 import upload from "../middleware/upload.js";
 import { isAdmin, authenticateToken } from "../middleware/auth.js";
 import Map from "../models/Map.js";
+import {checkDownloadLimit} from '../middleware/checkDownload.js'
 
 const router = express.Router();
 //POST, aggiungigiamo una nuova mappa, nel caso sei admin
@@ -39,6 +40,17 @@ router.get("/", async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: "Errore nel recupero delle mappe" });
   }
+});
+
+router.get('/download/:mapId', checkDownloadLimit, async (req, res) => {
+  const mapId = req.params.mapId;
+  const user = req.user;
+
+  // Incrementa il contatore dei download
+  user.downloadCount += 1;
+  await user.save();
+
+  res.download(`/path/to/maps/${mapId}`); 
 });
 
 export default router;
